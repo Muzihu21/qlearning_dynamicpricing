@@ -168,6 +168,7 @@ elif menu == "⚙️ Training Ulang":
             np.save("q_table.npy", q_table)
             np.save("rewards_per_episode.npy", rewards)
             st.session_state["rewards"] = rewards
+            st.session_state["q_table"] = q_table
             st.session_state["just_trained"] = True
             st.success("✅ Training selesai dan file disimpan. Silakan cek grafik reward.")
 
