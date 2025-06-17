@@ -45,11 +45,11 @@ sns.heatmap(
 )
 plt.xlabel("Harga Index")
 plt.ylabel("Tingkat Penjualan")
-plt.title("🧠 Heatmap Strategi Q-Learning (Aksi Optimal per State)")
+plt.title("🧐 Heatmap Strategi Q-Learning (Aksi Optimal per State)")
 plt.tight_layout()
 plt.savefig("visualizations/heatmap_q_table.png")
 plt.close()
-print("✅ Heatmap strategi berhasil disimpan di visualizations/heatmap_q_table.png")
+print("\u2705 Heatmap strategi berhasil disimpan di visualizations/heatmap_q_table.png")
 
 # ========== Evaluasi Perubahan Harga Tiap Episode ==========
 jumlah_evaluasi = 100
@@ -63,16 +63,24 @@ for ep in range(jumlah_evaluasi):
     harga_ep = []
 
     while not done:
-        state_idx = state_to_index[state]
-        action = np.argmax(q_table[state_idx])
+        if state not in state_to_index:
+            # fallback untuk state asing
+            action = 1  # tetap
+        else:
+            state_idx = state_to_index[state]
+            action = np.argmax(q_table[state_idx])
+
         next_state, reward, done = env.step(action)
         total_reward += reward
 
         # Ambil harga dari index → harga asli
         harga_idx = next_state[0]
-        harga_asli = env.harga_list[harga_idx]
-        harga_ep.append(harga_asli)
+        try:
+            harga_asli = env.harga_list[harga_idx]
+        except (IndexError, TypeError):
+            harga_asli = harga_idx  # fallback
 
+        harga_ep.append(harga_asli)
         state = next_state
 
     episode_rewards.append(total_reward)
