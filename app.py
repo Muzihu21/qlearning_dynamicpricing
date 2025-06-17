@@ -54,6 +54,48 @@ def train_q_learning(env, alpha, gamma, epsilon, episodes):
         rewards_per_episode.append(total_reward)
 
     return q_table, np.array(rewards_per_episode)
+# ========== Tampilan Harga Produk ==========
+elif menu == "📋 Peta Harga Produk":
+    st.title("📋 Rekomendasi Harga Produk Setelah Training")
+
+    try:
+        # Load produk dan Q-table
+        df_produk = pd.read_csv("produk.csv")
+        q_table = np.load("q_table.npy")
+
+        # Ambil aksi terbaik dari Q-table
+        best_actions = np.argmax(q_table, axis=1)
+        harga_rekomendasi = []
+
+        for idx, harga_awal in enumerate(env.harga_list):
+            # Simulasikan aksi (naik/turun/tetap)
+            action_counts = []
+            for sidx, state in enumerate(env.unique_states):
+                if state[0] == idx:
+                    action_counts.append(best_actions[sidx])
+            if action_counts:
+                # Ambil aksi yang paling dominan untuk harga ini
+                aksi_terbaik = max(set(action_counts), key=action_counts.count)
+            else:
+                aksi_terbaik = 1  # default: tetap
+
+            harga_idx = idx
+            if aksi_terbaik == 0 and harga_idx > 0:
+                harga_idx -= 1
+            elif aksi_terbaik == 2 and harga_idx < len(env.harga_list) - 1:
+                harga_idx += 1
+            harga_final = env.harga_list[harga_idx]
+            harga_rekomendasi.append(harga_final)
+
+        # Gabungkan dengan data produk
+        df_produk["Harga Awal"] = df_produk["Harga (Rp)"]
+        df_produk["Rekomendasi Harga"] = harga_rekomendasi
+        df_produk = df_produk[["id_produk", "Nama Produk", "Kategori", "Harga Awal", "Rekomendasi Harga"]]
+
+        st.dataframe(df_produk)
+
+    except Exception as e:
+        st.error(f"❌ Gagal menampilkan harga: {e}")
 
 # ========== Fungsi: Evaluasi ==========
 def evaluate_policy(env, q_table, n_trials=100):
