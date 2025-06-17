@@ -196,7 +196,11 @@ elif menu == "📋 Peta Harga Produk":
         # Buat mapping dari harga_awal ke rekomendasi_harga berdasarkan aksi dominan
         rekomendasi_per_harga = {}
         for harga_awal in env.harga_list:
-            action_counts = [best_actions[idx] for idx, state in enumerate(env.unique_states) if env.harga_list[state[0]] == harga_awal]
+            action_counts = [
+                best_actions[idx]
+                for idx, state in enumerate(env.unique_states)
+                if env.harga_list[state[1]] == harga_awal  # ← FIX: gunakan index harga yang benar
+            ]
             if not action_counts:
                 aksi_terbaik = 1  # default: tetap
             else:
