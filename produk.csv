@@ -1,0 +1,121 @@
+﻿id_produk,Nama Produk,Kategori,Harga (Rp)
+1,Lampu LED 5W,Elektronik,15.000
+2,Power Bank 2000mAh,Elektronik,35.000
+3,Charger USB-C,Elektronik,20.000
+4,Speaker Mini Bluetooth,Elektronik,60.000
+5,Headphone Earbuds,Elektronik,45.000
+6,Rice Cooker Mini,Alat Rumah Tangga,90.000
+7,Setrika Mini,Alat Rumah Tangga,50.000
+8,Blender Portable,Alat Rumah Tangga,75.000
+9,Kipas Angin USB,Elektronik,25.000
+10,Panci Teflon 20cm,Alat Rumah Tangga,65.000
+11,Wajan Penggorengan,Alat Rumah Tangga,40.000
+12,Gantungan Baju Plastik,Perlengkapan Rumah,2.500
+13,Tempat Makan Plastik,Perlengkapan Rumah,10.000
+14,Jam Dinding Digital,Elektronik,30.000
+15,Meja Lipat Mini,Furniture Ringan,85.000
+16,Kursi Lipat Ringan,Furniture Ringan,70.000
+17,Kipas Angin Standing,Elektronik,120.000
+18,Dispenser Air Manual,Alat Rumah Tangga,150.000
+19,Magic Com Mini,Alat Rumah Tangga,130.000
+20,Termos Air Panas,Perlengkapan Rumah,35.000
+21,Set Sendok Garpu Emas,Perlengkapan Rumah,15.000
+22,Kotak Bekal Makanan,Perlengkapan Rumah,20.000
+23,Tas Belanja Lipat,Aksesori Umum,10.000
+24,Payung Lipat Transparan,Aksesori Umum,25.000
+25,Gantungan Kunci Lucu,Aksesori Umum,5.000
+26,Jam Alarm Meja,Elektronik,18.000
+27,Penampung Sampah Rumah,Perlengkapan Rumah,22.000
+28,Sikat Lantai Otomatis,Alat Rumah Tangga,40.000
+29,Sabun Cuci Piring Cair,Sembako,12.000
+30,Lap Microfiber,Perlengkapan Rumah,15.000
+31,Baju Kaus Polos,Clothing & Fashion,35.000
+32,Celana Pendek Casual,Clothing & Fashion,45.000
+33,Kemeja Katun Slim Fit,Clothing & Fashion,65.000
+34,Rok Wanita Denim,Clothing & Fashion,75.000
+35,Topi Baseball,Clothing & Fashion,15.000
+36,Kacamata Hitam Fashion,Clothing & Fashion,40.000
+37,Sepatu Sneakers Pria,Footwear,110.000
+38,Kasur Lipat Camping,Outdoor & Travel,140.000
+39,Tenda Lipat 2 Orang,Outdoor & Travel,160.000
+40,Kantong Sleeping Bag,Outdoor & Travel,75.000
+41,Senter LED Senter Senter,Elektronik,20.000
+42,Kabel Data USB Type-C,Elektronik,12.000
+43,Mouse Wireless,Elektronik,30.000
+44,Keyboard Mechanical,Elektronik,150.000
+45,Speaker Bluetooth Mini,Elektronik,50.000
+46,Earphone In-Ear,Elektronik,25.000
+47,Smartwatch Basic,Elektronik,120.000
+48,Power Bank 10000mAh,Elektronik,90.000
+49,Flashdisk 64GB,Elektronik,120.000
+50,Router WiFi Portabel,Elektronik,160.000
+51,Bola Lampu LED 10W,Elektronik,20.000
+52,Charger Wireless,Elektronik,55.000
+53,Sarung Bantal 2 pcs,Home & Living,25.000
+54,Gantungan Kunci Logam,Aksesori Umum,3.000
+55,Payung Golf Besar,Aksesori Umum,30.000
+56,Kotak Perhiasan Kayu,Perlengkapan Rumah,35.000
+57,Kipas Angin Meja,Elektronik,60.000
+58,Dispenser Galon Atas,Alat Rumah Tangga,120.000
+59,Panci Stainless 24cm,Alat Rumah Tangga,85.000
+60,Tempat Bumbu Dapur,Alat Rumah Tangga,18.000
+61,Piring Plastik Set 10pcs,Perlengkapan Rumah,25.000
+62,Gelas Minum Plastik,Perlengkapan Rumah,8.000
+63,Benih Cabe Djitu,Perlengkapan Rumah,130.000
+64,Kasur Busa Tipis,Alat Rumah Tangga,110.000
+65,Matras Yoga,Edukasi & Hobi,45.000
+66,Buku Tulis 100 Lembar,Edukasi & Hobi,10.000
+67,Stiker Dekorasi Tembok,Perlengkapan Rumah,12.000
+68,Vas Bunga Plastik,Perlengkapan Rumah,15.000
+69,Mini Fan USB,Elektronik,25.000
+70,Lampu Emergency,Elektronik,35.000
+71,Kipas Angin Kecil,Elektronik,20.000
+72,Kabel HDMI 1.5m,Elektronik,25.000
+73,Remote Universal,Elektronik,15.000
+74,Sarung Baju Jas,Hanger & Penyimpanan,12.000
+75,Hanger Plastik 10pcs,Hanger & Penyimpanan,20.000
+76,Kotak Penyimpanan Plastik,Hanger & Penyimpanan,30.000
+77,Baterai AA isi 4pcs,Sembako,25.000
+78,Pembersih Lantai Cair,Kebersihan,20.000
+79,Pewangi Ruangan,Kecantikan & Perawatan,15.000
+80,Sabun Mandi Cair,Kecantikan & Perawatan,18.000
+81,Shampoo Botol,Kecantikan & Perawatan,25.000
+82,Kondisioner Rambut,Kecantikan & Perawatan,25.000
+83,Krim Wajah Siang,Kecantikan & Perawatan,45.000
+84,Masker Wajah Sheet,Kecantikan & Perawatan,8.000
+85,Lotion Tubuh,Kecantikan & Perawatan,30.000
+86,Parfum Roll On,Kecantikan & Perawatan,15.000
+87,Pensil Alis,Kecantikan & Perawatan,10.000
+88,Lip Balm,Kecantikan & Perawatan,12.000
+89,Hand Sanitizer 60ml,Kesehatan,10.000
+90,Masker Medis 50pcs,Kesehatan,25.000
+91,Thermometer Digital,Kesehatan,50.000
+92,Oximeter,Kesehatan,130.000
+93,Vitamin C 1000mg,Kesehatan,20.000
+94,Minyak Kayu Putih,Obat Tradisional,10.000
+95,Bandana Couple,Clothing & Fashion,15.000
+96,Sepatu Sandal Jepit,Footwear,25.000
+97,Kasur Karpet Lipat,Home & Living,90.000
+98,Kipas Angin DC,Elektronik,40.000
+99,Speaker Mini Bluetooth,Elektronik,50.000
+100,Senter LED Waterproof,Elektronik,30.000
+101,Gantungan Tas Dinding,Hanger & Penyimpanan,15.000
+102,Suspending Organizer,Hanger & Penyimpanan,20.000
+103,Kotak Obat Plastik,Home & Living,18.000
+104,Tirai Gorden Jendela,Home & Living,75.000
+105,Tempat Tisu Meja,Home & Living,12.000
+106,Tempat HP Rotan,Home & Living,25.000
+107,Hiasan Dinding Minimalis,Home & Living,30.000
+108,Gantungan Baju Dinding,Hanger & Penyimpanan,15.000
+109,Tempat Kartu Kulit,Aksesori Umum,20.000
+110,Dompet Mini Wanita,Aksesori Umum,25.000
+111,Casing HP Softcase,Aksesori Umum,15.000
+112,Holder HP Mobil,Aksesori Umum,20.000
+113,Tas Selempang Simple,Aksesori Umum,45.000
+114,Kantong HP Anti Air,Aksesori Umum,20.000
+115,USB Flashdisk 32GB,Aksesori Umum,50.000
+116,Kabel Data USB A to C,Aksesori Umum,15.000
+117,Power Extension 6 Outlet,Aksesori Umum,65.000
+118,Colokan Timer,Aksesori Umum,40.000
+119,Box Makanan 600ml,Perlengkapan Rumah,10.000
+120,Baskom Plastik 10L,Alat Rumah Tangga,25.000
