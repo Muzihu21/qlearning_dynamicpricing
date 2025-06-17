@@ -91,7 +91,7 @@ if menu == "📊 Visualisasi Q-table":
             q_table = st.session_state["q_table"]
             st.info("Menampilkan Q-table hasil training terbaru.")
         else:
-            q_table = np.load("q_table.npy")
+            q_table = np.load("q_table.npy").astype(float)
 
         xticklabels = [f"Rp {h/1000:.0f}K" for h in env.harga_list]
         yticklabels = [f"{s}" for s in env.unique_states]
