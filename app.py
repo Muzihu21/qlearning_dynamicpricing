@@ -192,19 +192,24 @@ elif menu == "📋 Peta Harga Produk":
         df_produk = pd.read_csv("produk.csv")
         q_table = np.load("q_table.npy")
         best_actions = np.argmax(q_table, axis=1)
+
+        # Buat mapping dari harga_awal ke rekomendasi_harga berdasarkan aksi dominan
         rekomendasi_per_harga = {}
+        for harga_awal in env.harga_list:
+            action_counts = [best_actions[idx] for idx, state in enumerate(env.unique_states) if env.harga_list[state[0]] == harga_awal]
+            if not action_counts:
+                aksi_terbaik = 1  # default: tetap
+            else:
+                aksi_terbaik = max(set(action_counts), key=action_counts.count)
 
-        for idx, harga_awal in enumerate(env.harga_list):
-            action_counts = [best_actions[sidx] for sidx, state in enumerate(env.unique_states) if state[0] == idx]
-            aksi_terbaik = max(set(action_counts), key=action_counts.count) if action_counts else 1
-
-            harga_idx = idx
+            harga_idx = env.harga_list.index(harga_awal)
             if aksi_terbaik == 0 and harga_idx > 0:
                 harga_idx -= 1
             elif aksi_terbaik == 2 and harga_idx < len(env.harga_list) - 1:
                 harga_idx += 1
+
             harga_final = env.harga_list[harga_idx]
-            rekomendasi_per_harga[env.harga_list[idx]] = harga_final
+            rekomendasi_per_harga[harga_awal] = harga_final
 
         df_produk["Harga Awal"] = df_produk["Harga (Rp)"]
         df_produk["Rekomendasi Harga"] = df_produk["Harga Awal"].map(rekomendasi_per_harga)
