@@ -93,8 +93,9 @@ if menu == "📊 Visualisasi Q-table":
         else:
             q_table = np.load("q_table.npy").astype(float)
 
-        xticklabels = [f"Rp {h/1000:.0f}K" for h in env.harga_list]
-        yticklabels = [f"{s}" for s in env.unique_states]
+xticklabels = ["Turun", "Tetap", "Naik"]
+yticklabels = [f"H{state[0]}-P{state[1]}" for state in env.unique_states]
+
 
         fig, ax = plt.subplots(figsize=(12, 8))
         sns.heatmap(q_table, annot=True, fmt=".0f", cmap="YlGnBu",
