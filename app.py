@@ -106,7 +106,7 @@ if menu == "📊 Visualisasi Q-table":
 
         ax.set_xlabel("Harga (Action)")
         ax.set_ylabel("State")
-        ax.set_title("Q-Table Heatmap (Tanpa Notasi Ilmiah)")
+        ax.set_title("Q-Table Heatmap")
         plt.xticks(rotation=45)
         st.pyplot(fig)
 
