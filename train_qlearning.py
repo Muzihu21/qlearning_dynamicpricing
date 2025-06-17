@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 from q_learning_env import PenjualanEnv
+from itertools import product
 
 # ===========================
 # Hyperparameters
@@ -33,6 +34,13 @@ q_table = np.zeros((n_states, env.n_actions))
 
 rewards_per_episode = []
 
+env.unique_harga = sorted(env.data['harga_index'].unique())
+env.unique_penjualan = sorted(env.data['penjualan_level'].unique())
+env.states = list(product(env.unique_harga, env.unique_penjualan))
+env.state_to_index = {s: i for i, s in enumerate(env.states)}
+state_to_index = env.state_to_index
+n_states = len(state_to_index)
+q_table = np.zeros((n_states, env.n_actions))
 # ===========================
 # Training loop
 # ===========================
