@@ -192,7 +192,7 @@ elif menu == "📋 Peta Harga Produk":
         df_produk = pd.read_csv("produk.csv")
         q_table = np.load("q_table.npy")
         best_actions = np.argmax(q_table, axis=1)
-        harga_rekomendasi = []
+        rekomendasi_per_harga = {}
 
         for idx, harga_awal in enumerate(env.harga_list):
             action_counts = [best_actions[sidx] for sidx, state in enumerate(env.unique_states) if state[0] == idx]
@@ -204,10 +204,10 @@ elif menu == "📋 Peta Harga Produk":
             elif aksi_terbaik == 2 and harga_idx < len(env.harga_list) - 1:
                 harga_idx += 1
             harga_final = env.harga_list[harga_idx]
-            harga_rekomendasi.append(harga_final)
+            rekomendasi_per_harga[env.harga_list[idx]] = harga_final
 
         df_produk["Harga Awal"] = df_produk["Harga (Rp)"]
-        df_produk["Rekomendasi Harga"] = harga_rekomendasi
+        df_produk["Rekomendasi Harga"] = df_produk["Harga Awal"].map(rekomendasi_per_harga)
         df_produk = df_produk[["id_produk", "Nama Produk", "Kategori", "Harga Awal", "Rekomendasi Harga"]]
 
         st.dataframe(df_produk)
