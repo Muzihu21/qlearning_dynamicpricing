@@ -86,28 +86,36 @@ def evaluate_policy(env, q_table, n_trials=100):
 if menu == "📊 Visualisasi Q-table":
     st.title("📊 Strategi Harga: Q-table Heatmap")
     try:
+        # Ambil Q-table dari session kalau baru training
         if "q_table" in st.session_state and st.session_state.get("just_trained", False):
             q_table = st.session_state["q_table"]
             st.info("Menampilkan Q-table hasil training terbaru.")
         else:
             q_table = np.load("q_table.npy")
 
+        # Buat label harga & state
         xticklabels = [f"Rp {h/1000:.0f}K" for h in env.harga_list]
         yticklabels = [f"{s}" for s in env.unique_states]
 
+        # 🧠 Perbaikan tampilan: angka bulat, no 0e+00
         fig, ax = plt.subplots(figsize=(12, 8))
-        sns.heatmap(q_table, annot=True, fmt=".0e", cmap="YlGnBu",
+        sns.heatmap(q_table, annot=True, fmt=".0f", cmap="YlGnBu",
                     xticklabels=xticklabels,
                     yticklabels=yticklabels,
                     linewidths=0.5, linecolor='gray', ax=ax)
+
         ax.set_xlabel("Harga (Action)")
         ax.set_ylabel("State")
-        ax.set_title("Q-Table Heatmap")
+        ax.set_title("Q-Table Heatmap (Tanpa Notasi Ilmiah)")
         plt.xticks(rotation=45)
         st.pyplot(fig)
+
+        # Reset flag
         st.session_state["just_trained"] = False
+
     except Exception as e:
         st.error(f"❌ Gagal memuat atau menampilkan Q-table: {e}")
+
 
 # ========== Halaman: Evaluasi Policy ==========
 elif menu == "📈 Evaluasi Policy":
