@@ -8,62 +8,70 @@ Original file is located at
 
 Q_LEARNING ENVIRONMENT BUILDING
 """
-
 import pandas as pd
 import random
 
 class PenjualanEnv:
     def __init__(self, data_path='env_ready_data.csv', max_steps=10):
         self.data = pd.read_csv(data_path)
+
+        # Komponen state
         self.states = list(zip(self.data['harga_index'], self.data['penjualan_level']))
+        self.unique_states = sorted(list(set(self.states)))
+        self.n_states = len(self.unique_states)
+
+        # Aksi
+        self.n_actions = 3  # 0: Turun, 1: Tetap, 2: Naik
+
+        # Reward
         self.rewards = self.data['reward'].tolist()
+
+        # Harga list
+        if 'harga' in self.data.columns:
+            harga_df = self.data[['harga_index', 'harga']].drop_duplicates().sort_values(by='harga_index')
+            self.harga_list = harga_df['harga'].tolist()
+        else:
+            self.harga_list = sorted(self.data['harga_index'].unique().tolist())
+
+        # Mapping untuk visualisasi dan training
+        self.state_to_index = {s: i for i, s in enumerate(self.unique_states)}
+        self.index_to_state = {i: s for s, i in self.state_to_index.items()}
 
         self.unique_harga = sorted(self.data['harga_index'].unique())
         self.unique_penjualan = sorted(self.data['penjualan_level'].unique())
-        self.n_actions = 3  # 0: Turun harga, 1: Tetap, 2: Naik harga
-
-        # ✅ Tambahkan harga_list (untuk UI/visualisasi)
-        # Ambil mapping index -> harga dari kolom harga jika ada
-        if 'harga' in self.data.columns:
-            harga_df = self.data[['harga_index', 'harga']].drop_duplicates()
-            harga_df = harga_df.sort_values(by='harga_index')
-            self.harga_list = harga_df['harga'].tolist()
-        else:
-            # Fallback: gunakan harga_index sebagai nominal langsung (kurang ideal)
-            self.harga_list = self.unique_harga
 
         self.max_steps = max_steps
         self.reset()
 
     def reset(self):
         self.current_step = 0
-        self.state = random.choice(self.states)
+        self.state = random.choice(self.unique_states)
         return self.state
 
     def step(self, action):
         harga_idx, penjualan_lvl = self.state
 
-        # Transisi harga berdasarkan aksi
+        # Transisi harga
         if action == 0 and harga_idx > min(self.unique_harga):
             harga_idx -= 1
         elif action == 2 and harga_idx < max(self.unique_harga):
             harga_idx += 1
-        # action == 1 → harga tetap
+        # aksi 1: tetap
 
-        # Cari semua data dengan state baru
-        possible_states = [(h, p) for h, p in self.states if h == harga_idx]
+        # Cari semua state yang match harga_idx baru
+        possible_states = [(h, p) for h, p in self.unique_states if h == harga_idx]
+
+        # Kalau gak ada, fallback
         next_state = random.choice(possible_states) if possible_states else self.state
-
         self.state = next_state
         self.current_step += 1
 
-        # Ambil reward dari state baru
+        # Ambil reward (dari state, bukan random)
         try:
             idx = self.states.index(self.state)
             reward = self.rewards[idx]
         except ValueError:
-            reward = 0  # fallback kalau state tidak ditemukan
+            reward = 0  # fallback
 
         done = self.current_step >= self.max_steps
         return self.state, reward, done
-
