@@ -1,5 +1,6 @@
 import streamlit as st
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from q_learning_env import PenjualanEnv
@@ -18,6 +19,7 @@ menu = st.sidebar.radio("Pilih Halaman", [
     "📈 Evaluasi Policy",
     "📉 Grafik Reward",
     "⚙️ Training Ulang",
+    "📋 Peta Harga Produk",
     "ℹ️ Tentang"
 ])
 
@@ -39,11 +41,7 @@ def train_q_learning(env, alpha, gamma, epsilon, episodes):
                 action = np.argmax(q_table[state_idx])
 
             result = env.step(action)
-            if len(result) == 3:
-                next_state, reward, done = result
-            else:
-                next_state, reward, done, _ = result
-
+            next_state, reward, done = result[:3]
             next_state_idx = state_to_index[next_state]
             q_table[state_idx, action] += alpha * (
                 reward + gamma * np.max(q_table[next_state_idx]) - q_table[state_idx, action]
@@ -54,110 +52,65 @@ def train_q_learning(env, alpha, gamma, epsilon, episodes):
         rewards_per_episode.append(total_reward)
 
     return q_table, np.array(rewards_per_episode)
-# ========== Tampilan Harga Produk ==========
-elif menu == "📋 Peta Harga Produk":
-    st.title("📋 Rekomendasi Harga Produk Setelah Training")
-
-    try:
-        # Load produk dan Q-table
-        df_produk = pd.read_csv("produk.csv")
-        q_table = np.load("q_table.npy")
-
-        # Ambil aksi terbaik dari Q-table
-        best_actions = np.argmax(q_table, axis=1)
-        harga_rekomendasi = []
-
-        for idx, harga_awal in enumerate(env.harga_list):
-            # Simulasikan aksi (naik/turun/tetap)
-            action_counts = []
-            for sidx, state in enumerate(env.unique_states):
-                if state[0] == idx:
-                    action_counts.append(best_actions[sidx])
-            if action_counts:
-                # Ambil aksi yang paling dominan untuk harga ini
-                aksi_terbaik = max(set(action_counts), key=action_counts.count)
-            else:
-                aksi_terbaik = 1  # default: tetap
-
-            harga_idx = idx
-            if aksi_terbaik == 0 and harga_idx > 0:
-                harga_idx -= 1
-            elif aksi_terbaik == 2 and harga_idx < len(env.harga_list) - 1:
-                harga_idx += 1
-            harga_final = env.harga_list[harga_idx]
-            harga_rekomendasi.append(harga_final)
-
-        # Gabungkan dengan data produk
-        df_produk["Harga Awal"] = df_produk["Harga (Rp)"]
-        df_produk["Rekomendasi Harga"] = harga_rekomendasi
-        df_produk = df_produk[["id_produk", "Nama Produk", "Kategori", "Harga Awal", "Rekomendasi Harga"]]
-
-        st.dataframe(df_produk)
-
-    except Exception as e:
-        st.error(f"❌ Gagal menampilkan harga: {e}")
 
 # ========== Fungsi: Evaluasi ==========
 def evaluate_policy(env, q_table, n_trials=100):
     total_rewards = []
+    harga_history = []
+
     for _ in range(n_trials):
         state = env.reset()
         done = False
         episode_reward = 0
+
         while not done:
             try:
                 state_index = env.unique_states.index(state)
                 action = np.argmax(q_table[state_index])
                 result = env.step(action)
-                if len(result) == 4:
-                    next_state, reward, done, _ = result
-                elif len(result) == 3:
-                    next_state, reward, done = result
-                else:
-                    raise ValueError("env.step() return format tidak valid")
+                next_state, reward, done = result[:3]
+                harga_idx = next_state[0]
+                harga = env.harga_list[harga_idx]
+                harga_history.append(harga)
 
                 episode_reward += reward
                 state = next_state
             except Exception as e:
                 st.warning(f"⚠️ Error evaluasi policy: {e}")
                 break
+
         total_rewards.append(episode_reward)
-    return np.mean(total_rewards)
+
+    return np.mean(total_rewards), harga_history
 
 # ========== Halaman: Visualisasi Q-table ==========
 if menu == "📊 Visualisasi Q-table":
     st.title("📊 Strategi Harga: Q-table Heatmap")
     try:
-        # Ambil Q-table dari session kalau baru training
         if "q_table" in st.session_state and st.session_state.get("just_trained", False):
             q_table = st.session_state["q_table"]
             st.info("Menampilkan Q-table hasil training terbaru.")
         else:
             q_table = np.load("q_table.npy")
 
-        # Buat label harga & state
         xticklabels = [f"Rp {h/1000:.0f}K" for h in env.harga_list]
         yticklabels = [f"{s}" for s in env.unique_states]
 
-        # 🧠 Perbaikan tampilan: angka bulat, no 0e+00
         fig, ax = plt.subplots(figsize=(12, 8))
         sns.heatmap(q_table, annot=True, fmt=".0f", cmap="YlGnBu",
                     xticklabels=xticklabels,
                     yticklabels=yticklabels,
                     linewidths=0.5, linecolor='gray', ax=ax)
-
         ax.set_xlabel("Harga (Action)")
         ax.set_ylabel("State")
         ax.set_title("Q-Table Heatmap")
         plt.xticks(rotation=45)
         st.pyplot(fig)
 
-        # Reset flag
         st.session_state["just_trained"] = False
 
     except Exception as e:
         st.error(f"❌ Gagal memuat atau menampilkan Q-table: {e}")
-
 
 # ========== Halaman: Evaluasi Policy ==========
 elif menu == "📈 Evaluasi Policy":
@@ -165,10 +118,20 @@ elif menu == "📈 Evaluasi Policy":
     try:
         q_table = np.load("q_table.npy")
         trials = st.slider("Jumlah Simulasi Episode", 10, 10000, 100, step=100)
-        avg_reward = evaluate_policy(env, q_table, trials)
+        avg_reward, harga_history = evaluate_policy(env, q_table, trials)
         st.success(f"🎯 Rata-rata reward dari {trials} simulasi: **{avg_reward:.2f}**")
+
+        st.markdown("### 📊 Perubahan Harga Selama Evaluasi")
+        fig, ax = plt.subplots()
+        ax.plot(harga_history, color='orange')
+        ax.set_xlabel("Episode")
+        ax.set_ylabel("Harga Produk")
+        ax.set_title("Perubahan Harga Selama Evaluasi")
+        st.pyplot(fig)
+
     except FileNotFoundError:
         st.error("❌ File `q_table.npy` tidak ditemukan.")
+
 # ========== Halaman: Grafik Reward ==========
 elif menu == "📉 Grafik Reward":
     st.title("📉 Grafik Reward per Episode")
@@ -193,7 +156,6 @@ elif menu == "📉 Grafik Reward":
         ax.legend()
         st.pyplot(fig)
 
-        # 💰 Tambahan metrik profit
         total_profit = np.sum(rewards)
         avg_profit = np.mean(rewards)
 
@@ -222,6 +184,37 @@ elif menu == "⚙️ Training Ulang":
             st.session_state["just_trained"] = True
             st.success("✅ Training selesai dan file disimpan. Silakan cek grafik reward.")
 
+# ========== Halaman: Peta Harga Produk ==========
+elif menu == "📋 Peta Harga Produk":
+    st.title("📋 Rekomendasi Harga Produk Setelah Training")
+
+    try:
+        df_produk = pd.read_csv("produk.csv")
+        q_table = np.load("q_table.npy")
+        best_actions = np.argmax(q_table, axis=1)
+        harga_rekomendasi = []
+
+        for idx, harga_awal in enumerate(env.harga_list):
+            action_counts = [best_actions[sidx] for sidx, state in enumerate(env.unique_states) if state[0] == idx]
+            aksi_terbaik = max(set(action_counts), key=action_counts.count) if action_counts else 1
+
+            harga_idx = idx
+            if aksi_terbaik == 0 and harga_idx > 0:
+                harga_idx -= 1
+            elif aksi_terbaik == 2 and harga_idx < len(env.harga_list) - 1:
+                harga_idx += 1
+            harga_final = env.harga_list[harga_idx]
+            harga_rekomendasi.append(harga_final)
+
+        df_produk["Harga Awal"] = df_produk["Harga (Rp)"]
+        df_produk["Rekomendasi Harga"] = harga_rekomendasi
+        df_produk = df_produk[["id_produk", "Nama Produk", "Kategori", "Harga Awal", "Rekomendasi Harga"]]
+
+        st.dataframe(df_produk)
+
+    except Exception as e:
+        st.error(f"❌ Gagal menampilkan harga: {e}")
+
 # ========== Halaman: Tentang ==========
 elif menu == "ℹ️ Tentang":
     st.title("ℹ️ Tentang Aplikasi")
@@ -231,9 +224,10 @@ elif menu == "ℹ️ Tentang":
 
     **Fitur:**
     - Visualisasi Q-table (heatmap)
-    - Evaluasi policy
+    - Evaluasi policy dan pergerakan harga
     - Grafik reward per episode
     - Training ulang dengan hyperparameter custom
+    - Rekomendasi harga per produk berdasarkan Q-table
 
     **Author**: Zihu — AI Engineer & Pejuang Skripsi 🧠🔥  
     **Stack**: Python, Streamlit, NumPy, Matplotlib, Seaborn
