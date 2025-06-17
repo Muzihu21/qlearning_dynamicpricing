@@ -7,7 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1odyp4wfERpQSg-Sck8_4BazOv6WUos-V
 
 Q_LEARNING ENVIRONMENT BUILDING
-"""
 import pandas as pd
 import random
 from itertools import product  # Tambahan penting!
@@ -21,8 +20,6 @@ class PenjualanEnv:
         self.unique_penjualan = sorted(self.data['penjualan_level'].unique())
 
         # Semua kombinasi state (bukan cuma yang ada di data!)
-        self.unique_harga = sorted(self.data['harga_index'].unique())
-        self.unique_penjualan = sorted(self.data['penjualan_level'].unique())
         self.states = list(product(self.unique_harga, self.unique_penjualan))
         self.unique_states = self.states  # Sama aja sekarang
 
@@ -49,8 +46,12 @@ class PenjualanEnv:
         self.max_steps = max_steps
         self.reset()
 
+    def reset(self):
+        self.current_step = 0
+        self.state = random.choice(self.unique_states)
+        return self.state
 
-       def step(self, action):
+    def step(self, action):
         harga_idx, penjualan_lvl = self.state
 
         # Transisi harga
@@ -71,3 +72,4 @@ class PenjualanEnv:
 
         done = self.current_step >= self.max_steps
         return self.state, reward, done
+
