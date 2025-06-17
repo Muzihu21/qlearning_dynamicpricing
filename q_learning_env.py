@@ -21,6 +21,8 @@ class PenjualanEnv:
         self.unique_penjualan = sorted(self.data['penjualan_level'].unique())
 
         # Semua kombinasi state (bukan cuma yang ada di data!)
+        self.unique_harga = sorted(self.data['harga_index'].unique())
+        self.unique_penjualan = sorted(self.data['penjualan_level'].unique())
         self.states = list(product(self.unique_harga, self.unique_penjualan))
         self.unique_states = self.states  # Sama aja sekarang
 
