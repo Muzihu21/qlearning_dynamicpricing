@@ -22,6 +22,16 @@ class PenjualanEnv:
         self.unique_penjualan = sorted(self.data['penjualan_level'].unique())
         self.n_actions = 3  # 0: Turun harga, 1: Tetap, 2: Naik harga
 
+        # ✅ Tambahkan harga_list (untuk UI/visualisasi)
+        # Ambil mapping index -> harga dari kolom harga jika ada
+        if 'harga' in self.data.columns:
+            harga_df = self.data[['harga_index', 'harga']].drop_duplicates()
+            harga_df = harga_df.sort_values(by='harga_index')
+            self.harga_list = harga_df['harga'].tolist()
+        else:
+            # Fallback: gunakan harga_index sebagai nominal langsung (kurang ideal)
+            self.harga_list = self.unique_harga
+
         self.max_steps = max_steps
         self.reset()
 
@@ -56,3 +66,4 @@ class PenjualanEnv:
 
         done = self.current_step >= self.max_steps
         return self.state, reward, done
+
