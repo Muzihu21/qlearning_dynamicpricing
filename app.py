@@ -112,8 +112,19 @@ elif menu == "📈 Evaluasi Policy":
 # ========== Halaman: Grafik Reward ==========
 elif menu == "📉 Grafik Reward":
     st.title("📉 Grafik Reward per Episode")
-    try:
-        rewards = np.load("rewards_per_episode.npy")
+
+    if "rewards" in st.session_state and st.session_state.get("just_trained", False):
+        rewards = st.session_state["rewards"]
+        st.info("Menampilkan hasil training terbaru.")
+    else:
+        try:
+            rewards = np.load("rewards_per_episode.npy")
+            st.caption("Data dimuat dari file rewards_per_episode.npy")
+        except FileNotFoundError:
+            st.error("❌ File `rewards_per_episode.npy` tidak ditemukan.")
+            rewards = None
+
+    if rewards is not None:
         fig, ax = plt.subplots()
         ax.plot(rewards, label='Reward per Episode', color='green')
         ax.set_xlabel("Episode")
@@ -121,8 +132,7 @@ elif menu == "📉 Grafik Reward":
         ax.set_title("Reward per Episode (Training Progress)")
         ax.legend()
         st.pyplot(fig)
-    except FileNotFoundError:
-        st.error("❌ File `rewards_per_episode.npy` tidak ditemukan.")
+        st.session_state["just_trained"] = False  # Reset flag
 
 # ========== Halaman: Training Ulang ==========
 elif menu == "⚙️ Training Ulang":
@@ -138,7 +148,9 @@ elif menu == "⚙️ Training Ulang":
             q_table, rewards = train_q_learning(env, alpha, gamma, epsilon, episodes)
             np.save("q_table.npy", q_table)
             np.save("rewards_per_episode.npy", rewards)
-            st.success("✅ Training selesai dan file disimpan.")
+            st.session_state["rewards"] = rewards
+            st.session_state["just_trained"] = True
+            st.success("✅ Training selesai dan file disimpan. Silakan cek grafik reward.")
 
 # ========== Halaman: Tentang ==========
 elif menu == "ℹ️ Tentang":
