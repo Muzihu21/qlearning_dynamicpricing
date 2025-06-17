@@ -127,7 +127,6 @@ elif menu == "📈 Evaluasi Policy":
         st.success(f"🎯 Rata-rata reward dari {trials} simulasi: **{avg_reward:.2f}**")
     except FileNotFoundError:
         st.error("❌ File `q_table.npy` tidak ditemukan.")
-
 # ========== Halaman: Grafik Reward ==========
 elif menu == "📉 Grafik Reward":
     st.title("📉 Grafik Reward per Episode")
@@ -151,6 +150,15 @@ elif menu == "📉 Grafik Reward":
         ax.set_title("Reward per Episode (Training Progress)")
         ax.legend()
         st.pyplot(fig)
+
+        # 💰 Tambahan metrik profit
+        total_profit = np.sum(rewards)
+        avg_profit = np.mean(rewards)
+
+        col1, col2 = st.columns(2)
+        col1.metric("📈 Total Profit", f"Rp {total_profit:,.0f}")
+        col2.metric("💰 Rata-rata Profit/Episode", f"Rp {avg_profit:,.0f}")
+
         st.session_state["just_trained"] = False
 
 # ========== Halaman: Training Ulang ==========
