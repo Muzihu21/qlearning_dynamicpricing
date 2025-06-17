@@ -196,11 +196,7 @@ elif menu == "📋 Peta Harga Produk":
         # Buat mapping dari harga_awal ke rekomendasi_harga berdasarkan aksi dominan
         rekomendasi_per_harga = {}
         for harga_awal in env.harga_list:
-            action_counts = [
-                best_actions[idx]
-                for idx, state in enumerate(env.unique_states)
-                if env.harga_list[state[1]] == harga_awal  # ← FIX: gunakan index harga yang benar
-            ]
+            action_counts = [best_actions[idx] for idx, state in enumerate(env.unique_states) if env.harga_list[state[0]] == harga_awal]
             if not action_counts:
                 aksi_terbaik = 1  # default: tetap
             else:
@@ -215,10 +211,19 @@ elif menu == "📋 Peta Harga Produk":
             harga_final = env.harga_list[harga_idx]
             rekomendasi_per_harga[harga_awal] = harga_final
 
+        # ✅ FIXED: gunakan .apply + .get untuk jaga fallback
         df_produk["Harga Awal"] = df_produk["Harga (Rp)"]
-        df_produk["Rekomendasi Harga"] = df_produk["Harga Awal"].map(rekomendasi_per_harga)
-        df_produk = df_produk[["id_produk", "Nama Produk", "Kategori", "Harga Awal", "Rekomendasi Harga"]]
+        df_produk["Rekomendasi Harga"] = df_produk["Harga Awal"].apply(
+            lambda h: rekomendasi_per_harga.get(h, h)
+        )
 
+        # 🧪 Opsional: tampilkan warning kalau ada harga tanpa rekomendasi
+        missing = df_produk[~df_produk["Harga Awal"].isin(rekomendasi_per_harga.keys())]
+        if not missing.empty:
+            st.warning(f"⚠️ {len(missing)} produk tidak memiliki rekomendasi eksplisit. "
+                       "Harga awal digunakan sebagai fallback.")
+
+        df_produk = df_produk[["id_produk", "Nama Produk", "Kategori", "Harga Awal", "Rekomendasi Harga"]]
         st.dataframe(df_produk)
 
     except Exception as e:
