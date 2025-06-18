@@ -215,15 +215,50 @@ elif menu == "🧪 Evaluasi Policy":
 
     if eval_btn:
         with st.spinner("Sedang melatih dan mengevaluasi..."):
-            q_table, _ = train_q_learning(env, alpha, gamma, epsilon, episodes)
+            q_table, rewards = train_q_learning(env, alpha, gamma, epsilon, episodes)
             avg_reward = evaluate_policy(env, q_table, trials)
 
-            # Format lokal ID
             def format_id(x):
                 return f"{x:,.2f}".replace(",", "#").replace(".", ",").replace("#", ".")
             trials_formatted = f"{trials:,}".replace(",", ".")
 
             st.success(f"🎯 Rata-rata reward dari {trials_formatted} simulasi: **{format_id(avg_reward)}**")
+
+            st.markdown("---")
+            st.subheader("📉 Reward Hasil Training")
+            total_reward = int(np.sum(rewards))
+            max_reward = int(np.max(rewards))
+            min_reward = int(np.min(rewards))
+            avg_episode_reward = int(np.mean(rewards))
+
+            col1, col2, col3, col4 = st.columns(4)
+            col1.metric("🎯 Rata-rata Reward/Episode", format_id(avg_episode_reward))
+            col2.metric("💰 Total Reward", format_id(total_reward))
+            col3.metric("📈 Maksimum", format_id(max_reward))
+            col4.metric("📉 Minimum", format_id(min_reward))
+
+            fig1, ax1 = plt.subplots()
+            ax1.plot(rewards, color='royalblue')
+            ax1.set_xlabel("Episode")
+            ax1.set_ylabel("Reward")
+            ax1.set_title("Reward per Episode (Evaluasi)")
+            st.pyplot(fig1)
+
+            fig2, ax2 = plt.subplots()
+            sns.histplot(rewards, kde=True, color='lightgreen', ax=ax2)
+            ax2.set_title("Distribusi Reward Evaluasi")
+            ax2.set_xlabel("Reward")
+            ax2.set_ylabel("Frekuensi")
+            st.pyplot(fig2)
+
+            if len(rewards) >= 100:
+                rolling_avg = np.convolve(rewards, np.ones(100)/100, mode='valid')
+                fig3, ax3 = plt.subplots()
+                ax3.plot(rolling_avg, color='orange')
+                ax3.set_title("Rolling Average (100 episode)")
+                ax3.set_xlabel("Episode")
+                ax3.set_ylabel("Rata-rata Reward")
+                st.pyplot(fig3)
 
 # ===================== Halaman: Training =====================
 elif menu == "⚙️ Training Ulang":
