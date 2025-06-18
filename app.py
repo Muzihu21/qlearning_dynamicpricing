@@ -122,13 +122,20 @@ elif menu == "📉 Grafik Reward":
 # ===================== Halaman: Evaluasi =====================
 elif menu == "🧪 Evaluasi Policy":
     st.subheader("🧪 Evaluasi Strategi Hasil Q-Learning")
-    try:
-        q_table = np.load("q_table.npy")
-        trials = st.slider("Jumlah Episode Simulasi", 10, 10000, 100, step=100)
-        avg_reward = evaluate_policy(env, q_table, trials)
-        st.success(f"🎯 Rata-rata reward dari {trials} simulasi: **{avg_reward:.2f}**")
-    except FileNotFoundError:
-        st.error("❌ Q-table belum dilatih.")
+    with st.form("eval_form"):
+        col1, col2, col3, col4, col5 = st.columns(5)
+        alpha = col1.number_input("Alpha", 0.0, 1.0, 0.1)
+        gamma = col2.number_input("Gamma", 0.0, 1.0, 0.9)
+        epsilon = col3.number_input("Epsilon", 0.0, 1.0, 0.1)
+        episodes = col4.number_input("Episodes", 100, 10000, 1000, step=100)
+        trials = col5.number_input("Simulasi Evaluasi", 10, 10000, 100, step=100)
+        eval_btn = st.form_submit_button("🚀 Latih & Evaluasi")
+
+    if eval_btn:
+        with st.spinner("Sedang melatih dan mengevaluasi..."):
+            q_table, _ = train_q_learning(env, alpha, gamma, epsilon, episodes)
+            avg_reward = evaluate_policy(env, q_table, trials)
+            st.success(f"🎯 Rata-rata reward dari {trials:,} simulasi: **{avg_reward:,.2f}**")
 
 # ===================== Halaman: Training =====================
 elif menu == "⚙️ Training Ulang":
@@ -150,4 +157,4 @@ elif menu == "⚙️ Training Ulang":
 
 # ===================== Footer =====================
 st.markdown("---")
-st.caption("© 2025 | Dibuat oleh Zihu untuk skripsi Digzi | Powered by Streamlit")
+st.caption("© 2025 | Dibuat oleh MuZihu untuk skripsi Digzi | Powered by Streamlit")
