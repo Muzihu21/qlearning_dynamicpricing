@@ -95,7 +95,7 @@ elif menu == "📊 Q-Table Heatmap":
     try:
         q_table = np.load("q_table.npy")
         fig, ax = plt.subplots(figsize=(12, 6))
-        sns.heatmap(q_table, annot=True, fmt=".2f", cmap="YlOrRd",
+        sns.heatmap(q_table, annot=True, fmt=",.0f", cmap="YlOrRd",
                     xticklabels=env.harga_list,
                     yticklabels=env.unique_states,
                     cbar_kws={'label': 'Nilai Q'})
@@ -171,7 +171,13 @@ elif menu == "🧪 Evaluasi Policy":
         with st.spinner("Sedang melatih dan mengevaluasi..."):
             q_table, _ = train_q_learning(env, alpha, gamma, epsilon, episodes)
             avg_reward = evaluate_policy(env, q_table, trials)
-            st.success(f"🎯 Rata-rata reward dari {trials:,} simulasi: **{avg_reward:,.2f}**")
+
+            # Format lokal ID
+            def format_id(x):
+                return f"{x:,.2f}".replace(",", "#").replace(".", ",").replace("#", ".")
+            trials_formatted = f"{trials:,}".replace(",", ".")
+
+            st.success(f"🎯 Rata-rata reward dari {trials_formatted} simulasi: **{format_id(avg_reward)}**")
 
 # ===================== Halaman: Training =====================
 elif menu == "⚙️ Training Ulang":
