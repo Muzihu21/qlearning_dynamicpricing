@@ -83,12 +83,12 @@ def evaluate_policy(env, q_table, n_trials=100):
 
     return np.mean(total_rewards), harga_history
 
-# ========== Halaman: Visualisasi Q-table ==========
 if menu == "📊 Visualisasi Q-table":
     st.title("📊 Strategi Harga: Tabel Keputusan Sederhana")
 
     st.markdown("""
-    Berikut adalah rekomendasi aksi terbaik untuk setiap kombinasi **harga saat ini** dan **permintaan pasar**.
+    Berikut adalah rekomendasi aksi terbaik untuk setiap kombinasi 
+    **harga saat ini** dan **permintaan pasar**.
     Semua nilai sudah didasarkan pada hasil training menggunakan Q-Learning.
     """)
 
