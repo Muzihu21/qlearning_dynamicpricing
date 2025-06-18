@@ -12,7 +12,14 @@ st.caption("Studi Kasus: Perusahaan Digzi")
 st.markdown("---")
 
 # ===================== Load Environment =====================
-env = PenjualanEnv()
+import os
+
+data_path = "env_ready_data.csv"
+if not os.path.exists(data_path):
+    st.error(f"❌ File {data_path} tidak ditemukan. Pastikan file tersedia di direktori yang sama dengan app.py")
+    st.stop()
+
+env = PenjualanEnv(data_path=data_path)
 env.unique_states = list(set(env.states))
 env.n_states = len(env.unique_states)
 
@@ -78,6 +85,7 @@ def evaluate_policy(env, q_table, n_trials=100):
     return np.mean(total_rewards)
 
 # ===================== Halaman: Data Awal & Persiapan =====================
+if menu == "🗂️ Data Awal & Persiapan":
 elif menu == "🗂️ Data Awal & Persiapan":
     st.subheader("📦 Data Penjualan (env_ready_data.csv)")
     st.markdown("""
