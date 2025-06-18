@@ -18,6 +18,7 @@ env.n_states = len(env.unique_states)
 
 # ===================== Sidebar =====================
 menu = st.sidebar.radio("📋 Navigasi", [
+    "🗂️ Data Awal & Persiapan",
     "🏠 Beranda",
     "📊 Q-Table Heatmap",
     "📉 Grafik Reward",
@@ -76,6 +77,43 @@ def evaluate_policy(env, q_table, n_trials=100):
         total_rewards.append(episode_reward)
     return np.mean(total_rewards)
 
+# ===================== Halaman: Data Awal & Persiapan =====================
+elif menu == "🗂️ Data Awal & Persiapan":
+    st.subheader("📦 Data Penjualan (env_ready_data.csv)")
+    st.markdown("""
+    Data ini berisi histori kombinasi harga dan tingkat penjualan dari perusahaan Digzi.
+    Setiap baris merepresentasikan satu kondisi pasar, termasuk reward (nilai ekonomi) dari strategi tersebut.
+    """)
+    try:
+        st.dataframe(env.data.head(20))
+        st.markdown(f"Total baris data: **{len(env.data):,}**".replace(",", "."))
+
+        st.markdown("---")
+        st.subheader("📊 Distribusi Harga dan Penjualan")
+        fig1, ax1 = plt.subplots()
+        sns.countplot(x=env.data['harga_index'], ax=ax1, palette='Blues')
+        ax1.set_title("Frekuensi Harga Index")
+        ax1.set_xlabel("Harga Index")
+        ax1.set_ylabel("Jumlah")
+        st.pyplot(fig1)
+
+        fig2, ax2 = plt.subplots()
+        sns.countplot(x=env.data['penjualan_level'], ax=ax2, palette='Greens')
+        ax2.set_title("Frekuensi Level Penjualan")
+        ax2.set_xlabel("Level Penjualan")
+        ax2.set_ylabel("Jumlah")
+        st.pyplot(fig2)
+
+        fig3, ax3 = plt.subplots()
+        sns.histplot(env.data['reward'], bins=30, kde=True, color='orange', ax=ax3)
+        ax3.set_title("Distribusi Reward")
+        ax3.set_xlabel("Reward")
+        ax3.set_ylabel("Frekuensi")
+        st.pyplot(fig3)
+
+    except Exception as e:
+        st.error(f"Gagal memuat data: {e}")
+
 # ===================== Halaman: Beranda =====================
 if menu == "🏠 Beranda":
     st.subheader("Selamat datang di Aplikasi Simulasi Q-Learning")
@@ -84,10 +122,11 @@ if menu == "🏠 Beranda":
     Dataset digunakan dari data penjualan perusahaan **Digzi**.
 
     Navigasi di sebelah kiri dapat digunakan untuk:
+    - Melihat data awal dan distribusinya
     - Melihat Q-table hasil training
     - Melihat performa strategi
     - Melatih ulang model dengan hyperparameter yang bisa diatur
-    """)
+    """)        st.error(f"Gagal memuat data: {e}")
 
 # ===================== Halaman: Heatmap =====================
 elif menu == "📊 Q-Table Heatmap":
