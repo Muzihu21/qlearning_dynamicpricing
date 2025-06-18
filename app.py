@@ -83,29 +83,29 @@ def evaluate_policy(env, q_table, n_trials=100):
 
     return np.mean(total_rewards), harga_history
 
-# ========== Fungsi: Visualisasi Q-Table Sederhana ==========
-def visualize_q_table_simple(q_table, env):
-    xticklabels = ["Turun", "Tetap", "Naik"]
-    yticklabels = [f"H{int(state[0])}-P{int(state[1])}" for state in env.unique_states]
+# ========== Halaman: Visualisasi Q-table ==========
+if menu == "📊 Visualisasi Q-table":
+    st.title("📊 Strategi Harga: Tabel Keputusan Sederhana")
 
-    fig, ax = plt.subplots(figsize=(10, 8))
-    sns.heatmap(
-        q_table,
-        annot=True,
-        fmt=".0f",
-        cmap="coolwarm",
-        xticklabels=xticklabels,
-        yticklabels=yticklabels,
-        linewidths=0.5,
-        linecolor='gray',
-        ax=ax
-    )
-    ax.set_xlabel("Aksi")
-    ax.set_ylabel("Kondisi")
-    ax.set_title("Q-Table Heatmap (Sederhana & Mudah Dibaca)")
-    plt.yticks(rotation=0)
-    plt.tight_layout()
-    st.pyplot(fig)
+    st.markdown("""
+    Berikut adalah rekomendasi aksi terbaik untuk setiap kombinasi **harga saat ini** dan **permintaan pasar**.
+    Semua nilai sudah didasarkan pada hasil training menggunakan Q-Learning.
+    """)
+
+    try:
+        if "q_table" in st.session_state and st.session_state.get("just_trained", False):
+            q_table = st.session_state["q_table"]
+            st.info("Menampilkan Q-table hasil training terbaru.")
+        else:
+            q_table = np.load("q_table.npy").astype(float)
+
+        df_decision = visualize_simple_decision_table(q_table, env)
+        st.dataframe(df_decision, use_container_width=True)
+
+    except FileNotFoundError:
+        st.error("❌ File `q_table.npy` tidak ditemukan. Silakan lakukan training terlebih dahulu.")
+    except Exception as e:
+        st.error(f"❌ Gagal memuat atau menampilkan tabel keputusan: {e}")
 
 # ========== Halaman: Visualisasi Q-table ==========
 if menu == "📊 Visualisasi Q-table":
