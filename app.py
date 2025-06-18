@@ -133,7 +133,7 @@ if menu == "🏠 Beranda":
     - Melihat Q-table hasil training
     - Melihat performa strategi
     - Melatih ulang model dengan hyperparameter yang bisa diatur
-    """)        st.error(f"Gagal memuat data: {e}")
+    """)
 
 # ===================== Halaman: Heatmap =====================
 elif menu == "📊 Q-Table Heatmap":
