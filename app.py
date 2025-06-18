@@ -86,7 +86,6 @@ def evaluate_policy(env, q_table, n_trials=100):
 
 # ===================== Halaman: Data Awal & Persiapan =====================
 if menu == "🗂️ Data Awal & Persiapan":
-elif menu == "🗂️ Data Awal & Persiapan":
     st.subheader("📦 Data Penjualan (env_ready_data.csv)")
     st.markdown("""
     Data ini berisi histori kombinasi harga dan tingkat penjualan dari perusahaan Digzi.
