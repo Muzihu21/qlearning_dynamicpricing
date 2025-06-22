@@ -151,7 +151,6 @@ elif menu == "📊 Q-Table Heatmap":
     except Exception as e:
         st.error(f"❌ Gagal memuat Q-table: {e}")
 
-# ===================== Halaman: Grafik Reward =====================
 elif menu == "📉 Grafik Reward":
     st.subheader("📉 Reward Selama Training")
     try:
@@ -162,44 +161,38 @@ elif menu == "📉 Grafik Reward":
         max_reward = int(np.max(rewards))
         min_reward = int(np.min(rewards))
 
-        # Konversi format angka ke format lokal ID (titik ribuan)
-        def format_id(x):
+        # Helper buat format angka
+        def format_id(x): 
             return f"{x:,}".replace(",", ".")
 
+        # Tampilan Metric
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("🎯 Rata-rata Reward", format_id(avg_reward))
         col2.metric("💰 Total Reward", format_id(total_reward))
         col3.metric("📈 Maksimum", format_id(max_reward))
         col4.metric("📉 Minimum", format_id(min_reward))
 
-        fig1, ax1 = plt.subplots()
+        # 1️⃣ Reward per Episode
+        fig1, ax1 = plt.subplots(figsize=(6, 3))
         ax1.plot(rewards, color='green')
         ax1.set_xlabel("Episode")
         ax1.set_ylabel("Reward")
         ax1.set_title("Reward per Episode")
         st.pyplot(fig1)
 
-        # Distribusi reward
-        fig2, ax2 = plt.subplots()
+        # 2️⃣ Distribusi Reward
+        fig2, ax2 = plt.subplots(figsize=(6, 3))
         sns.histplot(rewards, kde=True, color='skyblue', ax=ax2)
         ax2.set_title("Distribusi Reward")
         ax2.set_xlabel("Reward")
         ax2.set_ylabel("Frekuensi")
         st.pyplot(fig2)
-
-        # Rolling average
-        if total_episodes >= 100:
-            rolling_avg = np.convolve(rewards, np.ones(100)/100, mode='valid')
-            fig3, ax3 = plt.subplots()
-            ax3.plot(rolling_avg, color='orange')
-            ax3.set_title("Rata-rata Menggelinding (100 episode)")
-            ax3.set_xlabel("Episode")
-            ax3.set_ylabel("Reward Rata-rata")
-            st.pyplot(fig3)
+    except FileNotFoundError:
+        st.error("❌ File reward tidak ditemukan.")
 
     except FileNotFoundError:
         st.error("❌ File reward tidak ditemukan.")
-        st.error("❌ File reward tidak ditemukan.")
+
 
 # ===================== Halaman: Evaluasi =====================
 elif menu == "🧪 Evaluasi Policy":
