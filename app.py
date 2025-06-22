@@ -140,7 +140,7 @@ elif menu == "📊 Q-Table Heatmap":
     st.subheader("📊 Visualisasi Q-Table")
     try:
         q_table = np.load("q_table.npy")
-        fig, ax = plt.subplots(figsize=(12, 6))
+        fig, ax = plt.subplots(figsize=(6, 3))
         sns.heatmap(q_table, annot=True, fmt=",.0f", cmap="YlOrRd",
                     xticklabels=env.harga_list,
                     yticklabels=env.unique_states,
@@ -173,7 +173,7 @@ elif menu == "📉 Grafik Reward":
         col4.metric("📉 Minimum", format_id(min_reward))
 
         # 1️⃣ Reward per Episode
-        fig1, ax1 = plt.subplots(figsize=(6, 3))
+        fig1, ax1 = plt.subplots(figsize=(5, 2))
         ax1.plot(rewards, color='green')
         ax1.set_xlabel("Episode")
         ax1.set_ylabel("Reward")
@@ -181,7 +181,7 @@ elif menu == "📉 Grafik Reward":
         st.pyplot(fig1)
 
         # 2️⃣ Distribusi Reward
-        fig2, ax2 = plt.subplots(figsize=(6, 3))
+        fig2, ax2 = plt.subplots(figsize=(5, 2))
         sns.histplot(rewards, kde=True, color='skyblue', ax=ax2)
         ax2.set_title("Distribusi Reward")
         ax2.set_xlabel("Reward")
